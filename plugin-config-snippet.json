@@ -1,0 +1,35 @@
+{
+  "utools plugin config": {
+    "description": "uTools 插件配置",
+    "isFileTemplate": true,
+    "body": [
+      "{",
+      "  \"main\": \"index.html\",",
+      "  \"preload\": \"preload.js\",",
+      "  \"logo\": \"logo.png\",",
+      "  \"platform\": [",
+      "    \"win32\",",
+      "    \"darwin\",",
+      "    \"linux\"",
+      "  ],",
+      "  \"pluginSetting\": {",
+      "    \"single\": true",
+      "  },",
+      "  \"features\": [",
+      "    {",
+      "      \"code\": \"${1:feature-code}\",",
+      "      \"explain\": \"${2:功能说明}\",",
+      "      \"cmds\": [",
+      "        \"${3:Keyword}\",",
+      "        \"${4:关键字}\",",
+      "        {",
+      "          \"type\": \"${5:img}\",",
+      "          \"label\": \"${6:图片匹配}\"",
+      "        }$0",
+      "      ]",
+      "    }",
+      "  ]",
+      "}"
+    ]
+  }
+}

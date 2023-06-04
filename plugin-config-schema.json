@@ -1,0 +1,383 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON schema for uTools plugin configuration file",
+  "definitions": {
+    "entry": {
+      "properties": {
+        "main": {
+          "description": "入口文件，当该配置为空时，表示插件应用为模板插件应用。",
+          "type": "string",
+          "minLength": 1
+        },
+        "preload": {
+          "description": "预加载脚本。这是一个关键文件，在此文件内除了可以调用 uTools 的 API 外，还可以调用 Node、Electron 提供的 API。",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "plugin": {
+      "type": "object",
+      "properties": {
+        "logo": {
+          "description": "插件应用的图标。推荐使用尺寸为 256 x 256 的图标。",
+          "type": "string",
+          "minLength": 1
+        },
+        "platform": {
+          "$ref": "#/definitions/platform",
+          "description": "插件应用支持的平台，默认为全平台支持。",
+          "default": [
+            "win32",
+            "darwin",
+            "linux"
+          ]
+        },
+        "development": {
+          "description": "在开发模式下，可使用 `development` 配置覆盖 `main` 的值，在打包时，此字段会被删除。",
+          "markdownDescription": "在开发模式下，可使用 `development` 配置覆盖 `main` 的值，在打包时，此字段会被删除。",
+          "type": "object",
+          "properties": {
+            "main": {
+              "description": "在开发模式下，入口文件可以是 HTTP 协议，配合 webpack、Vite 等构建工具，在开发阶段进行热更新。 `preload.js` 代码变更后无法自动热更新，可以将插件应用设置成「隐藏插件应用后完全退出」，再次进入插件应用就可以应用最新的 `preload.js` 代码。",
+              "markdownDescription": "在开发模式下，入口文件可以是 HTTP 协议，可以配合 webpack、Vite 等构建工具，在开发阶段进行热更新。 `preload.js` 代码变更后无法自动热更新，可以将插件应用设置成「隐藏插件应用后完全退出」，再次进入插件应用就可以应用最新的 `preload.js` 代码。",
+              "type": "string"
+            }
+          },
+          "defaultSnippets": [
+            {
+              "body": {
+                "main": "${1:http://127.0.0.1:8000/}"
+              }
+            }
+          ]
+        },
+        "pluginSetting": {
+          "description": "插件应用设置。",
+          "type": "object",
+          "properties": {
+            "single": {
+              "description": "插件应用是否允许多开，默认不允许。多开方式：分离插件应用后，再次创建。",
+              "type": "boolean",
+              "default": true
+            },
+            "height": {
+              "description": "插件应用高度。该项被设置后，用户则不能再调整高度，最小值为 1。",
+              "type": "number",
+              "minimum": 1
+            }
+          },
+          "defaultSnippets": [
+            {
+              "body": {
+                "single": true
+              }
+            }
+          ]
+        },
+        "features": {
+          "description": "插件应用功能。描述了当 uTools 主输入框内容产生变化时，此插件应用是否显示在搜索结果列表中，一个插件应用可以有多个功能，一个功能可以提供多个命令供用户搜索。",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "description": "插件应用提供的某个功能的唯一标识，且插件应用内不可重复。",
+                "type": "string",
+                "minLength": 1
+              },
+              "explain": {
+                "description": "功能的说明，将在搜索列表对应位置中显示。",
+                "type": "string"
+              },
+              "icon": {
+                "description": "指定功能图标。相对路径，支持 PNG、JPEG、SVG 格式图片。",
+                "type": "string"
+              },
+              "platform": {
+                "$ref": "#/definitions/platform",
+                "description": "功能适配的平台。"
+              },
+              "cmds": {
+                "description": "当前功能下可响应的命令集，支持 6 种类型，分别为：关键字名称、文本正则匹配、任意文本匹配、图片匹配、文件或文件夹匹配、当前活动应用窗口匹配。",
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/labelMatch"
+                    },
+                    {
+                      "$ref": "#/definitions/regexMatch"
+                    },
+                    {
+                      "$ref": "#/definitions/overMatch"
+                    },
+                    {
+                      "$ref": "#/definitions/imgMatch"
+                    },
+                    {
+                      "$ref": "#/definitions/filesMatch"
+                    },
+                    {
+                      "$ref": "#/definitions/windowMatch"
+                    }
+                  ]
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "logo"
+      ]
+    },
+    "platform": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "win32",
+          "darwin",
+          "linux"
+        ],
+        "enumDescriptions": [
+          "Windows 平台。",
+          "macOS 平台。",
+          "Linux 平台。"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "labelType": {
+      "description": "类型标记。",
+      "type": "string"
+    },
+    "defaultLength": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "regularExpression": {
+      "type": "string",
+      "pattern": "^/.+/[gimsuy]*$"
+    },
+    "labelMatch": {
+      "description": "关键字名称。",
+      "type": "string",
+      "minLength": 1
+    },
+    "regexMatch": {
+      "description": "文本正则匹配。",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/labelType",
+          "enum": [
+            "regex"
+          ],
+          "enumDescriptions": [
+            "文本正则匹配类型。"
+          ]
+        },
+        "label": {
+          "$ref": "#/definitions/labelMatch"
+        },
+        "match": {
+          "description": "正则表达式字符串。注意: 正则表达式存如果在斜杠 \"\\\" 需要多加一个 \"\\\\\"，任意匹配的正则表达式会被 uTools 忽视，如果要任意匹配请使用“任意文本匹配”。",
+          "$ref": "#/definitions/regularExpression"
+        },
+        "minLength": {
+          "description": "最少字符数。",
+          "$ref": "#/definitions/defaultLength"
+        },
+        "maxLength": {
+          "description": "最多字符数。",
+          "$ref": "#/definitions/defaultLength"
+        }
+      },
+      "required": [
+        "type",
+        "label",
+        "match"
+      ]
+    },
+    "overMatch": {
+      "description": "任意文本匹配。",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/labelType",
+          "enum": [
+            "over"
+          ],
+          "enumDescriptions": [
+            "任意文本匹配类型。"
+          ]
+        },
+        "label": {
+          "$ref": "#/definitions/labelMatch"
+        },
+        "exclude": {
+          "description": "排除正则字符串，任意文本中排除的部分。",
+          "$ref": "#/definitions/regularExpression"
+        },
+        "minLength": {
+          "description": "最少字符数。",
+          "$ref": "#/definitions/defaultLength"
+        },
+        "maxLength": {
+          "description": "最多字符数，默认为 10000。",
+          "$ref": "#/definitions/defaultLength",
+          "default": 10000
+        }
+      },
+      "required": [
+        "type",
+        "label"
+      ]
+    },
+    "imgMatch": {
+      "description": "图片匹配。",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/labelType",
+          "enum": [
+            "img"
+          ],
+          "enumDescriptions": [
+            "图片匹配类型。"
+          ]
+        },
+        "label": {
+          "$ref": "#/definitions/labelMatch"
+        }
+      },
+      "required": [
+        "type",
+        "label"
+      ]
+    },
+    "filesMatch": {
+      "description": "文件或文件夹匹配。",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/labelType",
+          "enum": [
+            "files"
+          ],
+          "enumDescriptions": [
+            "文件或文件夹匹配类型。"
+          ]
+        },
+        "label": {
+          "$ref": "#/definitions/labelMatch"
+        },
+        "fileType": {
+          "description": "文件类型。",
+          "type": "string",
+          "enum": [
+            "",
+            "file",
+            "directory"
+          ],
+          "enumDescriptions": [
+            "匹配文件或文件夹。",
+            "匹配文件。",
+            "匹配文件夹。"
+          ],
+          "default": ""
+        },
+        "match": {
+          "description": "名称匹配正则字符串。",
+          "$ref": "#/definitions/regularExpression"
+        },
+        "minLength": {
+          "description": "最少文件数。",
+          "$ref": "#/definitions/defaultLength"
+        },
+        "maxLength": {
+          "description": "最多文件数。",
+          "$ref": "#/definitions/defaultLength"
+        }
+      },
+      "required": [
+        "type",
+        "label"
+      ]
+    },
+    "windowMatch": {
+      "description": "当前活动应用窗口匹配。",
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/labelType",
+          "enum": [
+            "window"
+          ],
+          "enumDescriptions": [
+            "当前活动应用窗口匹配类型。"
+          ]
+        },
+        "label": {
+          "$ref": "#/definitions/labelMatch"
+        },
+        "match": {
+          "description": "应用窗口匹配规则。",
+          "type": "object",
+          "properties": {
+            "app": {
+              "description": "应用名称。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "title": {
+              "description": "窗口标题正则。",
+              "$ref": "#/definitions/regularExpression"
+            },
+            "class": {
+              "description": "窗口类，Windows 平台专有。",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "app"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "label",
+        "match"
+      ]
+    }
+  },
+  "$ref": "#/definitions/plugin",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/entry",
+      "required": [
+        "main"
+      ]
+    },
+    {
+      "$ref": "#/definitions/entry",
+      "required": [
+        "preload"
+      ]
+    }
+  ]
+}
