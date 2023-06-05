@@ -352,10 +352,7 @@
               },
               "uniqueItems": true
             }
-          },
-          "required": [
-            "app"
-          ]
+          }
         }
       },
       "required": [
