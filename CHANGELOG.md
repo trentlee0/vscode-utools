@@ -5,3 +5,7 @@ All notable changes to the "vscode-utools" extension will be documented in this 
 ## [1.0.0] - 2023-06-04
 
 - 初始版本
+
+## [1.0.2] - 2023-09-02
+
+- 适配 uTools V4

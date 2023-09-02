@@ -20,7 +20,7 @@
       "type": "object",
       "properties": {
         "logo": {
-          "description": "插件应用的图标。推荐使用尺寸为 256 x 256 的图标。",
+          "description": "插件应用的图标。推荐使用尺寸至少为 256 x 256 的图标。",
           "type": "string",
           "minLength": 1
         },
@@ -93,6 +93,10 @@
               "icon": {
                 "description": "指定功能图标。相对路径，支持 PNG、JPEG、SVG 格式图片。",
                 "type": "string"
+              },
+              "mainPush": {
+                "description": "是否向搜索面板推送信息。",
+                "type": "boolean"
               },
               "platform": {
                 "$ref": "#/definitions/platform",
