@@ -20,7 +20,7 @@
       "type": "object",
       "properties": {
         "logo": {
-          "description": "插件应用的图标。推荐使用尺寸至少为 256 x 256 的图标。",
+          "description": "插件应用的图标。推荐使用尺寸为 200 x 200，圆角半径为 20 的图标。",
           "type": "string",
           "minLength": 1
         },
