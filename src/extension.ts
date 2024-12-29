@@ -32,7 +32,7 @@ function createConfigStatusBar(state: SharedState) {
     vscode.StatusBarAlignment.Right
   )
   statusBarItem.tooltip = '打开插件配置文件'
-  statusBarItem.text = 'uTools Plugin'
+  statusBarItem.text = 'uTools'
   statusBarItem.command = 'utools.openConfig'
 
   vscode.window.onDidChangeActiveTextEditor((e) => {
