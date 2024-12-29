@@ -14,7 +14,7 @@ All notable changes to the "vscode-utools" extension will be documented in this 
 
 - 修改 logo 提示描述信息
 
-## [1.0.4] - 2024-12-29
+## [1.0.5] - 2024-12-29
 
 - 适配 uTools 6
   - 移除插件配置中的 `platform`

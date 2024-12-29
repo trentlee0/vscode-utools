@@ -2,7 +2,7 @@
   "name": "utools",
   "displayName": "uTools",
   "description": "uTools plugin development extension for Visual Studio Code",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "icon": "icon.png",
   "publisher": "trentlee",
   "author": {
