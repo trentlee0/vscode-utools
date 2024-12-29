@@ -24,15 +24,6 @@
           "type": "string",
           "minLength": 1
         },
-        "platform": {
-          "$ref": "#/definitions/platform",
-          "description": "插件应用支持的平台，默认为全平台支持。",
-          "default": [
-            "win32",
-            "darwin",
-            "linux"
-          ]
-        },
         "development": {
           "description": "在开发模式下，可使用 `development` 配置覆盖 `main` 的值，在打包时，此字段会被删除。",
           "markdownDescription": "在开发模式下，可使用 `development` 配置覆盖 `main` 的值，在打包时，此字段会被删除。",
