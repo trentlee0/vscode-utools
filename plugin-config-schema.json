@@ -98,9 +98,9 @@
                 "description": "是否向搜索面板推送信息。",
                 "type": "boolean"
               },
-              "platform": {
-                "$ref": "#/definitions/platform",
-                "description": "功能适配的平台。"
+              "mainHide": {
+                "description": "是否主动隐藏搜索框。设置为 `true` 时，启动对应的 `feature` 不主动弹出主面板。",
+                "type": "boolean"
               },
               "cmds": {
                 "description": "当前功能下可响应的命令集，支持 6 种类型，分别为：关键字名称、文本正则匹配、任意文本匹配、图片匹配、文件或文件夹匹配、当前活动应用窗口匹配。",
@@ -140,23 +140,6 @@
       "required": [
         "logo"
       ]
-    },
-    "platform": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "win32",
-          "darwin",
-          "linux"
-        ],
-        "enumDescriptions": [
-          "Windows 平台。",
-          "macOS 平台。",
-          "Linux 平台。"
-        ]
-      },
-      "uniqueItems": true
     },
     "labelType": {
       "description": "类型标记。",
